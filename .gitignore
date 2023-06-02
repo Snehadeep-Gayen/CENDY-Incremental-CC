@@ -11,3 +11,7 @@
 *.exe
 *.out
 *.app
+
+# VScode
+*.json
+.vscode
