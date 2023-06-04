@@ -62,7 +62,7 @@ BFSplus::BFSplus(int vertex, Graph &g)
 
     type = adj;
     for (int i = 0; i < v; i++)
-        for (auto &j : adj[i])
+        for (auto &j : type[i])
             j = -1;
 
     level = vector<int>(v, -1);
