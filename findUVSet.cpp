@@ -14,8 +14,11 @@ vector<int> findUVSet(int a, int b, const Graph &G, const BFSplus &Ga)
     for (auto nbr : G.adj[a])
         A_Nbr[nbr] = 1;
 
-    vector<int> dist(G.v, 0);
+    vector<int> dist = Ga.level;
     dist[b] = 1;
+
+    vector<bool> visited(G.v, 0);
+    visited[b] = true;
 
     while (!q.empty())
     {
@@ -26,12 +29,15 @@ vector<int> findUVSet(int a, int b, const Graph &G, const BFSplus &Ga)
         {
             if (A_Nbr[c])
                 continue;
+            if(visited[c])
+                continue;
 
             if (Ga.level[c] > dist[x] + 1)
             {
                 dist[c] = dist[x]+1;
                 Va.push_back(c);
                 q.push(c);
+                visited[c] = true;
             }
         }
     }
@@ -45,6 +51,17 @@ void CENDY(Graph &G, vector<float> &Centrality, float &APL, int a, int b)
     BFSplus Gb(b,G);
     vector<int> Va = findUVSet(a,b,G,Ga);
     vector<int> Vb = findUVSet(b,a,G,Gb);
+
+
+    for(auto i : Va)
+    {
+        cout<<"distance between "<<a<<" and "<<i<<" changed\n";
+    }
+
+    for (auto i : Vb)
+    {
+        cout << "distance between " << b << " and " << i << " changed\n";
+    }
 
     Graph Gp = G;
     Gp.addEdge(a,b);
@@ -106,27 +123,45 @@ int main()
 {
     Graph g;
     auto v = vector<int>();
-    g.addVertex(v);
-    v = vector<int>(1, 0);
+
     g.addVertex(v);
 
-    vector<float> CC = {1, 1};
-    float APL = 1;
+    for(int i=1; i<8; i++)
+    {
+        g.addVertex(v);
+        g.addEdge(i, i-1);
+    }
 
-    v = {1};
-    g.addVertex(v);
-    v = {0, 2};
-    g.addVertex(v);
-    v = {1, 3};
-    g.addVertex(v);
-    v = {2, 3};
-    g.addVertex(v);
-    v = {2};
-    g.addVertex(v);
-    v = {5};
-    g.addVertex(v);
-    v = {6};
-    g.addVertex(v);
+    for(auto i : findUVSet(0, 7, g, BFSplus(0, g)))
+        cout<<i<<"\n";
+
+    // empty graph on n vertices
+
+    vector<float> CC(8, 0.0);
+    float APL = 37.0/14.0;
+    CC[0] = 7/28.0;
+    CC[1] = 7/22.0;
+    CC[2] = 7/18.0;
+    CC[3] = 7/16.0;
+    CC[4] = CC[3];
+    CC[5] = CC[2];
+    CC[6] = CC[1];
+    CC[7] = CC[0];
+
+    for (int i = 0; i < CC.size(); i++)
+    {
+        cout << "CC of " << i << " is " << CC[i] << "\n";
+    }
+    cout << "APL is " << APL << "\n";
+
+    // running cendy
+    CENDY(g, CC, APL, 0, 7);
+    for(int i=0; i<CC.size(); i++)
+    {
+        cout<<"CC of "<<i<<" is "<<CC[i]<<"\n";
+    }
+    cout<<"APL is "<<APL<<"\n";
+    g.addEdge(0, 7);
     BFSplus ga(0, g);
     auto ans = findUVSet(0, 2, g, ga);
     for(auto i : ans)
