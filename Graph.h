@@ -8,8 +8,8 @@ using namespace std;
 class Graph
 {
 public:
-    int v; // no of vertices
-    vector<vector<int>> adj;
+    int v;                   // no of vertices
+    vector<vector<int>> adj; // adjacency list
 
     Graph();
 
@@ -18,7 +18,6 @@ public:
 };
 
 // Implementation
-
 Graph::Graph()
 {
     adj = vector<vector<int>>();
@@ -39,18 +38,11 @@ void Graph::addEdge(int u1, int u2)
     adj[u2].push_back(u1);
 }
 
+// Class for BFSplus graph
 class BFSplus : public Graph
 {
 public:
-    vector<vector<int>> type;
-    vector<int> level;
-
-    enum edgeType
-    {
-        TREE,
-        HORIZONTAL,
-        INTERLEVEL
-    };
+    vector<int> level; // level of each vertex
 
     BFSplus(int vertex, Graph &g);
 };
@@ -60,13 +52,10 @@ BFSplus::BFSplus(int vertex, Graph &g)
     v = g.v;
     adj = g.adj;
 
-    type = adj;
-    for (int i = 0; i < v; i++)
-        for (auto &j : type[i])
-            j = -1;
-
+    // initialize level of each vertex to -1
     level = vector<int>(v, -1);
 
+    // perform BFS and set level of each vertex
     queue<int> q;
     q.push(vertex);
     level[vertex] = 0;
@@ -77,25 +66,11 @@ BFSplus::BFSplus(int vertex, Graph &g)
             int i = adj[q.front()][ii];
             if (level[i] == -1)
             {
-                type[q.front()][ii] = TREE;
                 level[i] = level[q.front()] + 1;
                 q.push(i);
             }
         }
         q.pop();
-    }
-
-    for (int i = 0; i < v; i++)
-    {
-        for (int j = 0; j < adj[i].size(); j++)
-        {
-            if (type[i][j] != -1)
-                continue;
-            if (level[i] == level[adj[i][j]])
-                type[i][j] = HORIZONTAL;
-            else if (level[i] != level[adj[i][j]])
-                type[i][j] = INTERLEVEL;
-        }
     }
 }
 

@@ -52,17 +52,6 @@ void CENDY(Graph &G, vector<float> &Centrality, float &APL, int a, int b)
     vector<int> Va = findUVSet(a,b,G,Ga);
     vector<int> Vb = findUVSet(b,a,G,Gb);
 
-
-    for(auto i : Va)
-    {
-        cout<<"distance between "<<a<<" and "<<i<<" changed\n";
-    }
-
-    for (auto i : Vb)
-    {
-        cout << "distance between " << b << " and " << i << " changed\n";
-    }
-
     Graph Gp = G;
     Gp.addEdge(a,b);
     vector<float> delta(G.v, 0);
@@ -132,8 +121,6 @@ int main()
         g.addEdge(i, i-1);
     }
 
-    for(auto i : findUVSet(0, 7, g, BFSplus(0, g)))
-        cout<<i<<"\n";
 
     // empty graph on n vertices
 
@@ -156,6 +143,9 @@ int main()
 
     // running cendy
     CENDY(g, CC, APL, 0, 7);
+
+    cout<<"After running CENDY\n";
+    
     for(int i=0; i<CC.size(); i++)
     {
         cout<<"CC of "<<i<<" is "<<CC[i]<<"\n";
@@ -167,6 +157,5 @@ int main()
     for(auto i : ans)
         cout << i << " ";
     cout << "\n";
-    cout << ga.type.size() << "\n";
     return 0;
 }
